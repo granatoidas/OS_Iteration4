@@ -1,17 +1,27 @@
 import java.util.ArrayList;
 
 public class Process {
+	static final String PASIRUOSES = "pasiruoses";
+	static final String BLOKUOTAS = "blokuotas";
+	static final String SUSTABDYTAS = "sustabdytas";
+	static final String AKTYVUS = "aktyvus";
+	
 	String name;
-	String state = "pasiruoses";
+	String state = PASIRUOSES;
 	int priority = 50;
+	
+	int segmentToRunFrom = 0;
 	
 	int id;
 	int parentId;
 	
 	ArrayList<Integer> childrenIds = new ArrayList<Integer>();
-	ArrayList<Integer> resourceIds = new ArrayList<Integer>();
+	ArrayList<Resource> generatedResources = new ArrayList<Resource>();
 	
-	Process(int parentId, String name){
+	ArrayList<Resource> resourcesInPossesion = new ArrayList<Resource>();
+	
+	Process(int id, int parentId, String name){
+		this.id = id;
 		this.parentId = parentId;
 		this.name = name;
 	}
@@ -21,12 +31,12 @@ public class Process {
 	}
 	
 	void increasePriority(){
-		priority += 2;
+		priority += 1;
 		if (priority > 100)
 			priority = 100;
 	}
 	void decreasePriority(){
-		priority -= 2;
+		priority -= 1;
 		if (priority < 100)
 			priority = 0;
 	}

@@ -1,17 +1,15 @@
 
 public class Resource {
 	int id;
+	Process parent;
 	int parentId;
 	String name;
 	
 	Integer adresatoId;
 	
-	public Resource(int parentId, String name){
-		this(parentId, name, (Integer) null);
-	}
-	
-	public Resource(int parentId, String name, int adresatoId){
-		this.parentId = parentId;
+	public Resource(Process parent, String name, Integer adresatoId){
+		this.parent = parent;
+		this.parentId = parent.id;
 		this.name = name;
 		this.adresatoId = adresatoId;
 	}
