@@ -26,7 +26,7 @@ public class CPU {
 			}
 			a.decreasePriority();
 			this.aktyvus_procesas = a;
-			Utils.LOG("Pradetas vykdyti procesas "+a.name + " prioritetas: "+a.priority);
+			Utils.LOG("Pradetas vykdyti procesas " + a.name + " prioritetas: " + a.priority);
 			a.run();
 		}
 	}
@@ -45,12 +45,12 @@ public class CPU {
 	}
 
 	// skirstytojas ir jo funkcijos
-	void skirstytojas(){
+	void skirstytojas() {
 		Utils.LOG("Pradetas vykdyti skirstytojas");
 		for (Process p : blokuoti_procesai.keySet()) {
 			Resource a = null;
-			for (Resource r : laisvi_resursai){
-				if (blokuoti_procesai.get(p).equals(r.name)){
+			for (Resource r : laisvi_resursai) {
+				if (blokuoti_procesai.get(p).equals(r.name)) {
 					a = r;
 					break;
 				}
@@ -76,7 +76,7 @@ public class CPU {
 		pasiruose_procesai.remove(p);
 		sustabdyti_procesai.remove(p);
 		blokuoti_procesai.remove(p);
-		for (Resource r : p.resourcesInPossesion){
+		for (Resource r : p.resourcesInPossesion) {
 			this.atalaisvintiResursa(r);
 		}
 		Utils.LOG("Sunaikintas procesas " + p.name);
@@ -97,6 +97,7 @@ public class CPU {
 	Resource kurtiResursa(String name, String data) {
 		return kurtiResursa(name, null, data);
 	}
+
 	Resource kurtiResursa(String name, Integer adresatoId, String data) {
 		Resource r = new Resource(this.aktyvus_procesas, name, adresatoId, data);
 		uzimti_resursai.add(r);
@@ -104,7 +105,6 @@ public class CPU {
 		Utils.LOG("Sukurtas resursas " + r.name);
 		return r;
 	}
-	
 
 	void naikintiResursa(Resource r) {
 		uzimti_resursai.remove(r);
@@ -114,22 +114,24 @@ public class CPU {
 
 	void prasytiResurso(String name) {
 		blokuoti_procesai.put(this.aktyvus_procesas, name);
-		Utils.LOG("Procesas " + this.aktyvus_procesas.name+" paprase resurso "+name);
+		Utils.LOG("Procesas " + this.aktyvus_procesas.name + " uzsiblokavo, nes paprase resurso " + name);
 	}
 
 	void atalaisvintiResursa(Resource r) {
 		uzimti_resursai.remove(r);
 		laisvi_resursai.add(r);
-		Utils.LOG("Procesas " + this.aktyvus_procesas.name+" atlaisvino resursa "+r.name);
+		Utils.LOG("Procesas " + this.aktyvus_procesas.name + " atlaisvino resursa " + r.name);
 	}
-	void kurtiSpecialResursa(String name, String data){
-		switch(data){
+
+	Resource kurtiSpecialResursa(String name, String data) {
+		switch (data) {
 		case "SpausdinkLabas":
-			
+
 			break;
 		case "Isjungti":
-			
-			break;			
+
+			break;
 		}
+		return null;
 	}
 }

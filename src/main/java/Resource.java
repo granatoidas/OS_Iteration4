@@ -4,12 +4,12 @@ public class Resource {
 	Process parent;
 	int parentId;
 	String name;
-	
+
 	Integer adresatoId;
-	
+
 	String data;
-	
-	public Resource(Process parent, String name, Integer adresatoId, String data){
+
+	public Resource(Process parent, String name, Integer adresatoId, String data) {
 		this.parent = parent;
 		this.parentId = parent.id;
 		this.name = name;

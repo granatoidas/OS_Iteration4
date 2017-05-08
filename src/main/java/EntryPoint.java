@@ -47,7 +47,7 @@ public class EntryPoint {
 											.get(this.resourcesInPossesion.size() - 1);
 									cpu.naikintiResursa(r);
 									if(r.data.equals("SpausdinkLabas")||r.data.equals("Isjungti")){
-										Resource nr = cpu.kurtiResursa("MainProc Uzduotis", r.data);
+										Resource nr = cpu.kurtiSpecialResursa("MainProc Uzduotis", r.data);
 										cpu.atalaisvintiResursa(nr);
 									}else{
 										Resource nr = cpu.kurtiResursa("Nera vartotojo programos", null);
