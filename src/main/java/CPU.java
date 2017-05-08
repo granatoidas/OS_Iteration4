@@ -122,16 +122,4 @@ public class CPU {
 		laisvi_resursai.add(r);
 		Utils.LOG("Procesas " + this.aktyvus_procesas.name + " atlaisvino resursa " + r.name);
 	}
-
-	Resource kurtiSpecialResursa(String name, String data) {
-		switch (data) {
-		case "SpausdinkLabas":
-
-			break;
-		case "Isjungti":
-
-			break;
-		}
-		return null;
-	}
 }

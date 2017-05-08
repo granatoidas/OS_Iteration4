@@ -1,7 +1,8 @@
 
 public class EntryPoint {
 	static CPU cpu = new CPU();
-//sdfsdfsdfsdfs
+
+	// sdfsdfsdfsdfs
 	public static void main(String[] args) {
 		Process startStop = new Process(0, 0, "StarStop") {
 			void run() {
@@ -24,7 +25,8 @@ public class EntryPoint {
 									this.segmentToRunFrom = 3;
 									return;
 								case 3:
-									Resource r = cpu.kurtiResursa("Uzduotis supervizorineje atmintyje", resourcesInPossesion.get(0).data);
+									Resource r = cpu.kurtiResursa("Uzduotis supervizorineje atmintyje",
+											resourcesInPossesion.get(0).data);
 									cpu.atalaisvintiResursa(r);
 									cpu.naikintiResursa(resourcesInPossesion.get(0));
 									cpu.atalaisvintiResursa(resourcesInPossesion.get(0));
@@ -46,10 +48,10 @@ public class EntryPoint {
 									UserProcessResource r = (UserProcessResource) this.resourcesInPossesion
 											.get(this.resourcesInPossesion.size() - 1);
 									cpu.naikintiResursa(r);
-									if(r.data.equals("SpausdinkLabas")||r.data.equals("Isjungti")){
-										Resource nr = cpu.kurtiSpecialResursa("MainProc Uzduotis", r.data);
+									if (r.data.equals("SpausdinkLabas") || r.data.equals("Isjungti")) {
+										Resource nr = cpu.kurtiResursa("MainProc Uzduotis", r.data);
 										cpu.atalaisvintiResursa(nr);
-									}else{
+									} else {
 										Resource nr = cpu.kurtiResursa("Nera vartotojo programos", null);
 										cpu.atalaisvintiResursa(nr);
 									}
@@ -72,7 +74,7 @@ public class EntryPoint {
 									return;
 								case 2:
 									Resource loaderJob = resourcesInPossesion.get(0);
-									cpu.atalaisvintiResursa(resourcesInPossesion.get(0));
+									cpu.atalaisvintiResursa(resourcesInPossesion.get(1));
 									cpu.naikintiResursa(loaderJob);
 									cpu.atalaisvintiResursa(cpu.kurtiResursa("LoaderDone", loaderJob.parentId, null));
 								}
@@ -89,18 +91,13 @@ public class EntryPoint {
 									this.segmentToRunFrom = 1;
 									return;
 								case 1:
-									UserProcessResource r = (UserProcessResource) this.resourcesInPossesion
-											.get(this.resourcesInPossesion.size() - 1);
-									if (r.status == 2){
+									Resource r = this.resourcesInPossesion.get(this.resourcesInPossesion.size() - 1);
+									if (r.data.equals("deleteJobGovernor")) {
 										cpu.naikintiProcesa(r.parent);
-										cpu.naikintiResursa(r);
-									} else{
-										
+									} else {
+										cpu.kurtiProcesa(new JobGovernor(Utils.getId(), this.id, r.data));
 									}
-									this.segmentToRunFrom = 2;
-									return;
-								case 2:
-									;
+									cpu.naikintiResursa(r);
 								}
 								this.segmentToRunFrom = 0;
 							}
@@ -170,6 +167,57 @@ public class EntryPoint {
 		Utils.LOG("Sukurtas procesas StartStop");
 		cpu.pasiruose_procesai.add(startStop);
 		cpu.planutojas();
+	}
+
+}
+
+class JobGovernor extends Process {
+	String data;
+	CPU cpu = EntryPoint.cpu;
+
+	JobGovernor(int id, int parentId, String data) {
+		super(id, parentId, "JobGovernor");
+		this.data = data;
+	}
+
+	void run() {
+		switch (this.segmentToRunFrom) {
+		case 0:
+			cpu.prasytiResurso("Vartotojo atminties blokas");
+			this.segmentToRunFrom = 1;
+			return;
+		case 1:
+			cpu.atalaisvintiResursa(cpu.kurtiResursa("LoaderJob", null));
+			cpu.prasytiResurso("LoaderDone");
+			this.segmentToRunFrom = 2;
+			return;
+		case 2:
+			cpu.naikintiResursa(this.resourcesInPossesion.get(1));
+			cpu.kurtiProcesa(new VirtualMachine(Utils.getId(), this.id, this.data));
+
+		}
+	}
+
+}
+
+class VirtualMachine extends Process {
+	String data;
+	CPU cpu = EntryPoint.cpu;
+
+	VirtualMachine(int id, int parentId, String data) {
+		super(id, parentId, "JobGovernor");
+		this.data = data;
+	}
+
+	void run() {
+		switch (this.data) {
+		case "SpausdinkLabas":
+
+			break;
+		case "Isjungti":
+
+			break;
+		}
 	}
 
 }
