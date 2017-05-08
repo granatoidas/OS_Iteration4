@@ -20,7 +20,8 @@ public class EntryPoint {
 									this.segmentToRunFrom = 2;
 									return;
 								case 2:
-									cpu.kurtiResursa("Uzduotis supervizorineje atmintyje");
+									Resource r = cpu.kurtiResursa("Uzduotis supervizorineje atmintyje", null);
+									cpu.atalaisvintiResursa(r);
 								}
 								this.segmentToRunFrom = 0;
 							}
@@ -38,11 +39,13 @@ public class EntryPoint {
 									UserProcessResource r = (UserProcessResource) this.resourcesInPossesion
 											.get(this.resourcesInPossesion.size() - 1);
 									cpu.naikintiResursa(r);
-									//cpu.kur
-									this.segmentToRunFrom = 2;
-									return;
-								case 2:
-									;
+									if(r.data.equals("SpausdinkLabas")||r.data.equals("MOSpabaiga")){
+										Resource nr = cpu.kurtiResursa("MainProc Uzduotis", r.data);
+										cpu.atalaisvintiResursa(nr);
+									}else{
+										Resource nr = cpu.kurtiResursa("Nera vartotojo programos", null);
+										cpu.atalaisvintiResursa(nr);
+									}
 								}
 								this.segmentToRunFrom = 0;
 							}
@@ -53,11 +56,18 @@ public class EntryPoint {
 							while (true) {
 								switch (this.segmentToRunFrom) {
 								case 0:
-									;
+									cpu.prasytiResurso("LoaderJob");
+									this.segmentToRunFrom = 1;
+									return;
 								case 1:
-									;
+									cpu.prasytiResurso("Vartotojo atmintis");
+									this.segmentToRunFrom = 2;
+									return;
 								case 2:
-									;
+									Resource loaderJob = resourcesInPossesion.get(0);
+									cpu.atalaisvintiResursa(resourcesInPossesion.get(0));
+									cpu.naikintiResursa(loaderJob);
+									cpu.atalaisvintiResursa(cpu.kurtiResursa("LoaderDone", loaderJob.parentId, null));
 								}
 								this.segmentToRunFrom = 0;
 							}
@@ -137,11 +147,11 @@ public class EntryPoint {
 						}
 					});
 
-					cpu.kurtiResursa("Kanalu irenginys");
-					cpu.kurtiResursa("Supervizoriaus atmintis");
+					cpu.kurtiResursa("Kanalu irenginys", null);
+					cpu.kurtiResursa("Supervizoriaus atmintis", null);
 					for (int i = 0; i < 15; i++)
-						cpu.kurtiResursa("Vartotojo atminties blokas");
-					cpu.kurtiResursa("Kietasis diskas");
+						cpu.kurtiResursa("Vartotojo atminties blokas", null);
+					cpu.kurtiResursa("Kietasis diskas", null);
 					this.segmentToRunFrom = 1;
 					cpu.prasytiResurso("MOS pabaiga");
 					return;

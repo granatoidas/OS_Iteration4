@@ -86,13 +86,14 @@ public class CPU {
 	}
 
 	// resursu primityvai
-	void kurtiResursa(String name) {
-		kurtiResursa(name, null);
+	Resource kurtiResursa(String name, String data) {
+		return kurtiResursa(name, null, data);
 	}
-	void kurtiResursa(String name, Integer adresatoId) {
-		Resource r = new Resource(this.aktyvus_procesas, name, adresatoId);
+	Resource kurtiResursa(String name, Integer adresatoId, String data) {
+		Resource r = new Resource(this.aktyvus_procesas, name, adresatoId, data);
 		uzimti_resursai.add(r);
 		this.aktyvus_procesas.generatedResources.add(r);
+		return r;
 	}
 	void kurtiSpecialResursa(){
 		
