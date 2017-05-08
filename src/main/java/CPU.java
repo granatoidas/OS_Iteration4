@@ -67,8 +67,8 @@ public class CPU {
 	}
 
 	// procesu primityvai
-	void kurtiProcesa(int parentId, String name) {
-
+	void kurtiProcesa(Process p) {
+		pasiruose_procesai.add(p);
 	}
 
 	void naikintiProcesa(int id) {
