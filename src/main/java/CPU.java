@@ -50,6 +50,13 @@ public class CPU {
 		for (Process p : blokuoti_procesai.keySet()) {
 			Resource a = null;
 			for (Resource r : laisvi_resursai) {
+				if (r.adresatoId != null) {
+					if (r.adresatoId == p.id && blokuoti_procesai.get(p).equals(r.name)) {
+						a = r;
+						break;
+					}
+					continue;
+				}
 				if (blokuoti_procesai.get(p).equals(r.name)) {
 					a = r;
 					break;
@@ -62,6 +69,7 @@ public class CPU {
 			p.resourcesInPossesion.add(a);
 			blokuoti_procesai.remove(p);
 			pasiruose_procesai.add(p);
+			Utils.LOG("Procesui " + p.name + " atiduotas resursas " + a.name);
 		}
 	}
 
@@ -77,7 +85,7 @@ public class CPU {
 		sustabdyti_procesai.remove(p);
 		blokuoti_procesai.remove(p);
 		for (Resource r : p.resourcesInPossesion) {
-			this.atalaisvintiResursa(r);
+			this.atlaisvintiResursa(r);
 		}
 		Utils.LOG("Sunaikintas procesas " + p.name);
 	}
@@ -86,11 +94,13 @@ public class CPU {
 		pasiruose_procesai.remove(p);
 		blokuoti_procesai.remove(p);
 		sustabdyti_procesai.add(p);
+		Utils.LOG("Sustabdytas procesas " + p.name);
 	}
 
 	void aktyvuotiProcesa(Process p) {
 		sustabdyti_procesai.remove(p);
 		pasiruose_procesai.add(p);
+		Utils.LOG("Aktyvuotas procesas " + p.name);
 	}
 
 	// resursu primityvai
@@ -107,6 +117,7 @@ public class CPU {
 	}
 
 	void naikintiResursa(Resource r) {
+		aktyvus_procesas.resourcesInPossesion.remove(r);
 		uzimti_resursai.remove(r);
 		r.parent.generatedResources.remove(r);
 		Utils.LOG("Sunaikintas resursas " + r.name);
@@ -114,12 +125,14 @@ public class CPU {
 
 	void prasytiResurso(String name) {
 		blokuoti_procesai.put(this.aktyvus_procesas, name);
+		pasiruose_procesai.remove(this.aktyvus_procesas);
 		Utils.LOG("Procesas " + this.aktyvus_procesas.name + " uzsiblokavo, nes paprase resurso " + name);
 	}
 
-	void atalaisvintiResursa(Resource r) {
+	void atlaisvintiResursa(Resource r) {
 		uzimti_resursai.remove(r);
 		laisvi_resursai.add(r);
+		aktyvus_procesas.resourcesInPossesion.remove(r);
 		Utils.LOG("Procesas " + this.aktyvus_procesas.name + " atlaisvino resursa " + r.name);
 	}
 }
