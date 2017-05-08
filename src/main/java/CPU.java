@@ -71,16 +71,21 @@ public class CPU {
 		pasiruose_procesai.add(p);
 	}
 
-	void naikintiProcesa(int id) {
-
+	void naikintiProcesa(Process p) {
+		pasiruose_procesai.remove(p);
+		sustabdyti_procesai.remove(p);
+		blokuoti_procesai.remove(p);
 	}
 
-	void stabdytiProcesa(int id) {
-
+	void stabdytiProcesa(Process p) {
+		pasiruose_procesai.remove(p);
+		blokuoti_procesai.remove(p);
+		sustabdyti_procesai.add(p);
 	}
 
-	void aktyvuotiProcesa(int id) {
-
+	void aktyvuotiProcesa(Process p) {
+		sustabdyti_procesai.remove(p);
+		pasiruose_procesai.add(p);
 	}
 
 	// resursu primityvai
