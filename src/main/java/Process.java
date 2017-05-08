@@ -15,7 +15,7 @@ public class Process {
 	int id;
 	int parentId;
 	
-	ArrayList<Integer> childrenIds = new ArrayList<Integer>();
+	ArrayList<Process> children = new ArrayList<Process>();
 	ArrayList<Resource> generatedResources = new ArrayList<Resource>();
 	
 	ArrayList<Resource> resourcesInPossesion = new ArrayList<Resource>();

@@ -2,11 +2,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class CPU {
-	ArrayList<Process> procesai = new ArrayList<Process>();
-	ArrayList<Resource> resursai = new ArrayList<Resource>();
-
 	ArrayList<Process> pasiruose_procesai = new ArrayList<Process>();
-	//ArrayList<Process> blokuoti_procesai = new ArrayList<Process>();
 	ArrayList<Process> sustabdyti_procesai = new ArrayList<Process>();
 	Process aktyvus_procesas = null;
 
@@ -69,6 +65,7 @@ public class CPU {
 	// procesu primityvai
 	void kurtiProcesa(Process p) {
 		pasiruose_procesai.add(p);
+		this.aktyvus_procesas.children.add(p);
 	}
 
 	void naikintiProcesa(Process p) {
@@ -96,6 +93,9 @@ public class CPU {
 		Resource r = new Resource(this.aktyvus_procesas, name, adresatoId);
 		uzimti_resursai.add(r);
 		this.aktyvus_procesas.generatedResources.add(r);
+	}
+	void kurtiSpecialResursa(){
+		
 	}
 	
 
