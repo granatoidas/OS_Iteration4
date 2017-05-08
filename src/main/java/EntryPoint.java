@@ -12,16 +12,23 @@ public class EntryPoint {
 							while (true) {
 								switch (this.segmentToRunFrom) {
 								case 0:
-									cpu.prasytiResurso("Kietasis diskas");
+									cpu.prasytiResurso("Pageidautina programa");
 									this.segmentToRunFrom = 1;
 									return;
 								case 1:
-									cpu.prasytiResurso("Supervizorine atmintis");
+									cpu.prasytiResurso("Kietasis diskas");
 									this.segmentToRunFrom = 2;
 									return;
 								case 2:
-									Resource r = cpu.kurtiResursa("Uzduotis supervizorineje atmintyje", null);
+									cpu.prasytiResurso("Supervizorine atmintis");
+									this.segmentToRunFrom = 3;
+									return;
+								case 3:
+									Resource r = cpu.kurtiResursa("Uzduotis supervizorineje atmintyje", resourcesInPossesion.get(0).data);
 									cpu.atalaisvintiResursa(r);
+									cpu.naikintiResursa(resourcesInPossesion.get(0));
+									cpu.atalaisvintiResursa(resourcesInPossesion.get(0));
+									cpu.atalaisvintiResursa(resourcesInPossesion.get(0));
 								}
 								this.segmentToRunFrom = 0;
 							}
@@ -39,7 +46,7 @@ public class EntryPoint {
 									UserProcessResource r = (UserProcessResource) this.resourcesInPossesion
 											.get(this.resourcesInPossesion.size() - 1);
 									cpu.naikintiResursa(r);
-									if(r.data.equals("SpausdinkLabas")||r.data.equals("MOSpabaiga")){
+									if(r.data.equals("SpausdinkLabas")||r.data.equals("Isjungti")){
 										Resource nr = cpu.kurtiResursa("MainProc Uzduotis", r.data);
 										cpu.atalaisvintiResursa(nr);
 									}else{
@@ -160,6 +167,7 @@ public class EntryPoint {
 				}
 			}
 		};
+		Utils.LOG("Sukurtas procesas StartStop");
 		cpu.pasiruose_procesai.add(startStop);
 		cpu.planutojas();
 	}

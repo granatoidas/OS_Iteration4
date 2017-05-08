@@ -14,6 +14,7 @@ public class CPU {
 	// planuotojas ir jo funkcijos
 	void planutojas() {
 		while (true) {
+			Utils.LOG("Pradetas planuotojas");
 			Process a = getReadyProcess();
 			for (Process p : pasiruose_procesai) {
 				if (p.priority > a.priority)
@@ -25,6 +26,7 @@ public class CPU {
 			}
 			a.decreasePriority();
 			this.aktyvus_procesas = a;
+			Utils.LOG("Pradetas vykdyti procesas "+a.name + " prioritetas: "+a.priority);
 			a.run();
 		}
 	}
@@ -44,6 +46,7 @@ public class CPU {
 
 	// skirstytojas ir jo funkcijos
 	void skirstytojas(){
+		Utils.LOG("Pradetas vykdyti skirstytojas");
 		for (Process p : blokuoti_procesai.keySet()) {
 			Resource a = null;
 			for (Resource r : laisvi_resursai){
@@ -66,12 +69,17 @@ public class CPU {
 	void kurtiProcesa(Process p) {
 		pasiruose_procesai.add(p);
 		this.aktyvus_procesas.children.add(p);
+		Utils.LOG("Sukurtas procesas " + p.name);
 	}
 
 	void naikintiProcesa(Process p) {
 		pasiruose_procesai.remove(p);
 		sustabdyti_procesai.remove(p);
 		blokuoti_procesai.remove(p);
+		for (Resource r : p.resourcesInPossesion){
+			this.atalaisvintiResursa(r);
+		}
+		Utils.LOG("Sunaikintas procesas " + p.name);
 	}
 
 	void stabdytiProcesa(Process p) {
@@ -93,24 +101,35 @@ public class CPU {
 		Resource r = new Resource(this.aktyvus_procesas, name, adresatoId, data);
 		uzimti_resursai.add(r);
 		this.aktyvus_procesas.generatedResources.add(r);
+		Utils.LOG("Sukurtas resursas " + r.name);
 		return r;
-	}
-	void kurtiSpecialResursa(){
-		
 	}
 	
 
 	void naikintiResursa(Resource r) {
 		uzimti_resursai.remove(r);
 		r.parent.generatedResources.remove(r);
+		Utils.LOG("Sunaikintas resursas " + r.name);
 	}
 
 	void prasytiResurso(String name) {
 		blokuoti_procesai.put(this.aktyvus_procesas, name);
+		Utils.LOG("Procesas " + this.aktyvus_procesas.name+" paprase resurso "+name);
 	}
 
 	void atalaisvintiResursa(Resource r) {
 		uzimti_resursai.remove(r);
 		laisvi_resursai.add(r);
+		Utils.LOG("Procesas " + this.aktyvus_procesas.name+" atlaisvino resursa "+r.name);
+	}
+	void kurtiSpecialResursa(String name, String data){
+		switch(data){
+		case "SpausdinkLabas":
+			
+			break;
+		case "Isjungti":
+			
+			break;			
+		}
 	}
 }
