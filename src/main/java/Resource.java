@@ -15,5 +15,6 @@ public class Resource {
 		this.name = name;
 		this.adresatoId = adresatoId;
 		this.data = data;
+		this.id = Utils.getId();
 	}
 }

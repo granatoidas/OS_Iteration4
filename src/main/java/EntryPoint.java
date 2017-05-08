@@ -22,7 +22,7 @@ public class EntryPoint {
 									this.segmentToRunFrom = 2;
 									return;
 								case 2:
-									cpu.prasytiResurso("Supervizorine atmintis");
+									cpu.prasytiResurso("Supervizoriaus atmintis");
 									this.segmentToRunFrom = 3;
 									return;
 								case 3:
@@ -46,10 +46,10 @@ public class EntryPoint {
 									this.segmentToRunFrom = 1;
 									return;
 								case 1:
-									UserProcessResource r = (UserProcessResource) this.resourcesInPossesion
-											.get(this.resourcesInPossesion.size() - 1);
+									Resource r = this.resourcesInPossesion.get(this.resourcesInPossesion.size() - 1);
 									cpu.naikintiResursa(r);
-									if (r.data.equals("SpausdinkLabas") || r.data.equals("Isjungti")) {
+									if (r.data.equals("SpausdinkLabas") || r.data.equals("Isjungti")
+											|| r.data.equals("SpausdinkIvesti")) {
 										Resource nr = cpu.kurtiResursa("MainProc Uzduotis", r.data);
 										cpu.atlaisvintiResursa(nr);
 									} else {
@@ -70,12 +70,7 @@ public class EntryPoint {
 									this.segmentToRunFrom = 1;
 									return;
 								case 1:
-									cpu.prasytiResurso("Vartotojo atmintis");
-									this.segmentToRunFrom = 2;
-									return;
-								case 2:
 									Resource loaderJob = resourcesInPossesion.get(0);
-									cpu.atlaisvintiResursa(resourcesInPossesion.get(1));
 									cpu.naikintiResursa(loaderJob);
 									cpu.atlaisvintiResursa(cpu.kurtiResursa("LoaderDone", loaderJob.parentId, null));
 								}
@@ -88,7 +83,7 @@ public class EntryPoint {
 							while (true) {
 								switch (this.segmentToRunFrom) {
 								case 0:
-									cpu.prasytiResurso("MainProc uzduotis");
+									cpu.prasytiResurso("MainProc Uzduotis");
 									this.segmentToRunFrom = 1;
 									return;
 								case 1:
@@ -114,7 +109,7 @@ public class EntryPoint {
 									return;
 								case 1:
 									Resource r = resourcesInPossesion.get(0);
-									cpu.atlaisvintiResursa(cpu.kurtiResursa("UserProcStat", r.parent.parentId, r.data));
+									cpu.atlaisvintiResursa(cpu.kurtiResursa("UserProcStatus", r.parent.parentId, r.data));
 									cpu.naikintiResursa(r);
 								case 2:
 									;
@@ -182,10 +177,9 @@ public class EntryPoint {
 				}
 			}
 		};
+		gui = new GUI();
 		Utils.LOG("Sukurtas procesas StartStop");
 		cpu.pasiruose_procesai.add(startStop);
-		gui = new GUI();
-
 		cpu.planutojas();
 	}
 
@@ -222,18 +216,15 @@ class JobGovernor extends Process {
 			cpu.naikintiResursa(r);
 			if (r.data.equals("IN")) {
 				cpu.prasytiResurso("Vartotojo ivestis");
-				cpu.naikintiResursa(this.resourcesInPossesion.get(1));
 				this.segmentToRunFrom = 4;
 				return;
 			} else if (r.data.equals("OUT")) {
 				cpu.atlaisvintiResursa(cpu.kurtiResursa("PrintRequest", ((VirtualMachine) children.get(0)).dataField));
 				cpu.aktyvuotiProcesa(children.get(0));
 				cpu.prasytiResurso("UserProcStatus");
-				cpu.naikintiResursa(this.resourcesInPossesion.get(1));
 				this.segmentToRunFrom = 3;
 				return;
 			} else {
-				cpu.naikintiResursa(this.resourcesInPossesion.get(1));
 				break;
 			}
 		case 4:
@@ -242,12 +233,13 @@ class JobGovernor extends Process {
 			cpu.naikintiResursa(rn);
 			cpu.aktyvuotiProcesa(children.get(0));
 			cpu.prasytiResurso("UserProcStatus");
-			cpu.naikintiResursa(this.resourcesInPossesion.get(1));
 			this.segmentToRunFrom = 3;
 			return;
 		}
 		cpu.naikintiProcesa(children.get(0));
 		cpu.atlaisvintiResursa(resourcesInPossesion.get(0));
+		cpu.atlaisvintiResursa(cpu.kurtiResursa("MainProc Uzduotis", "deleteJobGovernor"));
+		cpu.stabdytiProcesa(this);
 	}
 
 }
@@ -258,7 +250,7 @@ class VirtualMachine extends Process {
 	String dataField;
 
 	VirtualMachine(int id, int parentId, String data) {
-		super(id, parentId, "JobGovernor");
+		super(id, parentId, "VirtualMachine");
 		this.data = data;
 	}
 
@@ -270,22 +262,48 @@ class VirtualMachine extends Process {
 		case "Isjungti":
 			Isjungti();
 			break;
-		case "Spausdink ivesti":
+		case "SpausdinkIvesti":
 			SpausdinkIvesti();
 			break;
 		}
+		cpu.stabdytiProcesa(this);
 	}
 
 	void SpausdinkLabas() {
-
+		switch (this.segmentToRunFrom) {
+		case 0:
+			dataField = "labas";
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("Pertraukimas", "OUT"));
+			this.segmentToRunFrom = 1;
+			return;
+		case 1:
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("Pertraukimas", ""));
+			return;
+		}
 	}
 
 	void Isjungti() {
-
+		switch (this.segmentToRunFrom) {
+		case 0:
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("MOS pabaiga", ""));
+			return;
+		}
 	}
 
 	void SpausdinkIvesti() {
-
+		switch (this.segmentToRunFrom) {
+		case 0:
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("Pertraukimas", "IN"));
+			this.segmentToRunFrom = 1;
+			return;
+		case 1:
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("Pertraukimas", "OUT"));
+			this.segmentToRunFrom = 2;
+			return;
+		case 2:
+			cpu.atlaisvintiResursa(cpu.kurtiResursa("Pertraukimas", ""));
+			return;
+		}
 	}
 
 }

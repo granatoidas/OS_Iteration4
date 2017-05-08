@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class Utils {
 	private static int lastId = 0;
 
+	public static boolean debug = false;
+
 	public static int getId() {
 		return ++lastId;
 	}
@@ -11,6 +13,7 @@ public class Utils {
 
 	public static void LOG(String s) {
 		System.out.println(s);
-		sc.nextLine();
+		if (debug)
+			sc.nextLine();
 	}
 }

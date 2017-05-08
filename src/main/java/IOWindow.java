@@ -1,5 +1,4 @@
 
-
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import net.miginfocom.swing.MigLayout;
@@ -19,6 +18,7 @@ public class IOWindow extends JPanel {
 
 	JTextArea textArea;
 	public String lastInput = "";
+
 	public IOWindow(boolean isInput) {
 		setLayout(new MigLayout("", "[grow][]", "[][grow]"));
 
@@ -66,9 +66,9 @@ public class IOWindow extends JPanel {
 		});
 		add(btnNewButton, "cell 1 0");
 	}
-	
-	public void appendOutput(String s){
-		textArea.append(">"+s+"\n");
+
+	public void appendOutput(String s) {
+		textArea.append(">" + s + "\n");
 	}
 
 }

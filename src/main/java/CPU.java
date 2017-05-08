@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class CPU {
 	ArrayList<Process> pasiruose_procesai = new ArrayList<Process>();
@@ -14,6 +16,13 @@ public class CPU {
 	// planuotojas ir jo funkcijos
 	void planutojas() {
 		while (true) {
+
+			if (!Utils.debug)
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+				}
+
 			Utils.LOG("Pradetas planuotojas");
 			Process a = getReadyProcess();
 			for (Process p : pasiruose_procesai) {
@@ -47,7 +56,8 @@ public class CPU {
 	// skirstytojas ir jo funkcijos
 	void skirstytojas() {
 		Utils.LOG("Pradetas vykdyti skirstytojas");
-		for (Process p : blokuoti_procesai.keySet()) {
+		Set<Process> proccesses = new LinkedHashSet<Process>(blokuoti_procesai.keySet());
+		for (Process p : proccesses) {
 			Resource a = null;
 			for (Resource r : laisvi_resursai) {
 				if (r.adresatoId != null) {
